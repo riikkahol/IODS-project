@@ -26,4 +26,13 @@ learning2014 <- filter(learning2014, Points > 0)
 
 learning2014
 
+# exercise 4, had problems understanding what to do, maybe I got it figured out
+
+setwd("C:/Users/riikk/Documents/Open data science/IODS-project/Data")
+write_csv(learning2014, "learning2014,csv")
+
+read_test = read_csv("learning2014,csv")
+head(read_test)
+
+
 
