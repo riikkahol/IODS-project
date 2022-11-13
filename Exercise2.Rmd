@@ -337,7 +337,9 @@ library(dplyr)
 male_students <- filter(learning2014, gender == "M")
 
 # select rows where points is greater than zero
-learning2014 <- 
+learning2014 <- filter(learning2014, points > 0)
+
+
 
 ```
 
@@ -396,10 +398,10 @@ p2
 p3 <- p2 + geom_smooth(method = "lm")
 
 # add a main title
-p4 <- "change me!"
-
+p4 <- ggtitle("Student's attitude versus exam points")
+p3 <- p3+p4
 # draw the plot!
-
+p3
 
 ```
 
@@ -443,16 +445,20 @@ Hints:
 
 # draw a scatter plot matrix of the variables in learning2014.
 # [-1] excludes the first column (gender)
-pairs(learning2014[-1])
+group <- NA
+group[learning2014$gender == "M"] <- 1
+group[learning2014$gender == "F"] <- 2
+pairs(learning2014[-1], col = c("red", "blue")[group])
 
 # access the GGally and ggplot2 libraries
 library(GGally)
 library(ggplot2)
 
 # create a more advanced plot matrix with ggpairs()
-p <- ggpairs(learning2014, mapping = aes(), lower = list(combo = wrap("facethist", bins = 20)))
+p <- ggpairs(learning2014, mapping = aes(col = gender, alpha = 0.3), lower = list(combo = wrap("facethist", bins = 20)))
 
 # draw the plot
+p
 
 
 
@@ -496,10 +502,10 @@ library(ggplot2)
 qplot(attitude, points, data = learning2014) + geom_smooth(method = "lm")
 
 # fit a linear model
-my_model <- lm(points ~ 1, data = learning2014)
+my_model <- lm(points ~ attitude, data = learning2014)
 
 # print out a summary of the model
-
+summary(my_model)
 
 ```
 
@@ -544,10 +550,10 @@ library(ggplot2)
 ggpairs(learning2014, lower = list(combo = wrap("facethist", bins = 20)))
 
 # create a regression model with multiple explanatory variables
-my_model2 <- lm(points ~ attitude + stra, data = learning2014)
+my_model2 <- lm(points ~ attitude + stra + surf, data = learning2014)
 
 # print out a summary of the model
-
+summary(my_model2)
 
 ```
 
@@ -597,7 +603,8 @@ Hint:
 my_model2 <- lm(points ~ attitude + stra, data = learning2014)
 
 # draw diagnostic plots using the plot() function. Choose the plots 1, 2 and 5
-
+par(mfrow = c(2,2)) 
+plot (my_model2, which = c(1,2,5))
 
 ```
 
@@ -640,17 +647,17 @@ Hints:
 m <- lm(points ~ attitude, data = learning2014)
 
 # print out a summary of the model
-
+summary(m)
 
 # New observations
 new_attitudes <- c("Mia" = 3.8, "Mike"= 4.4, "Riikka" = 2.2, "Pekka" = 2.9)
-new_data <- data.frame(attitude = "change me!")
+new_data <- data.frame(attitude = new_attitudes)
 
 # Print out the new data
-
+new_data
 
 # Predict the new students exam points based on attitude
-predict(m, newdata = "change me!")
+predict(m, newdata = new_data)
 
 
 ```
