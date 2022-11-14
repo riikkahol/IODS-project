@@ -5,23 +5,25 @@ library(tidyverse)
 setwd("C:/Users/riikk/Documents/Open data science/IODS-project/Data")
 #students2014 = read_csv("learning2014.csv")
 students2014 <- read.table("https://raw.githubusercontent.com/KimmoVehkalahti/Helsinki-Open-Data-Science/master/datasets/learning2014.txt",
-                           sep = ",", header = T)
+                           sep = ",", header = TRUE)
 dim(students2014)
 str(students2014)
+# glimpse(gapdata) # each variable as line, variable type, first values
+# ff_glimpse(gapdata) # summary statistics for each variable
 # add here description of the dataset
 
 summary(students2014)
 
 library(GGally)
 library(ggplot2)
-
 p <- ggpairs(students2014, mapping = aes(col = gender), lower = list(combo = wrap("facethist", bins = 20)))
-
+p
 # less male participants, participating women ar a bit younger, women seem to have worse attitudes, attitudes does not seem to be normally distributed
 my_model <- lm(points ~ attitude + stra + surf, data = students2014)
-#par(mfrow = c(2,2)) 
+par(mfrow = c(1,1)) 
 par(mar=c(1,1,1,1))
 plot (my_model, which = c(1,2,5))
+
 summary(my_model)
 #Coefficients:
 # Estimate Std. Error t value Pr(>|t|)    
@@ -34,3 +36,6 @@ summary(my_model)
 my_model <- lm(points ~ attitude, data = students2014)
 summary(my_model)
 plot (my_model, which = c(1,2,5))
+
+
+
