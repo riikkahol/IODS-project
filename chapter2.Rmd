@@ -63,16 +63,15 @@ When exploring the data visually, it looks like there were less male participant
 ```{r}
 my_model <- lm(points ~ attitude + stra + surf, data = students2014)
 par(mar=c(1,1,1,1))
-plot (my_model, which = c(1,2,5))
 summary(my_model)
 ```
 Graphical overview of the data
 
 DO THIS! Show a graphical overview of the data and show summaries of the variables in the data. Describe and interpret the outputs, commenting on the distributions of the variables and the relationships between them. (0-3 points)
 
-DO THIS!Choose three variables as explanatory variables and fit a regression model where exam points is the target (dependent, outcome) variable. Show a summary of the fitted model and comment and interpret the results. Explain and interpret the statistical test related to the model parameters. If an explanatory variable in your model does not have a statistically significant relationship with the target variable, remove the variable from the model and fit the model again without it. (0-4 points)
+DO THIS! Show a summary of the fitted model and comment and interpret the results. Explain and interpret the statistical test related to the model parameters. If an explanatory variable in your model does not have a statistically significant relationship with the target variable, remove the variable from the model and fit the model again without it. (0-4 points)
 
-I chose three variables (attitude, stra, surf) and fit a regression model where exam points was the target (dependent, outcome) variable. Only attitudes had a statistically significant relationship with points, so I removed the other variables and ran the model without them. 
+I chose three variables (attitude, stra, surf) and fit a regression model where exam points was the target (dependent, outcome) variable. This is __multivariable linear regression__. With this we explore the relationship between the explaatory variables (attitude, stra and surf) and the exam points.
 
 #Coefficients:
 # Estimate Std. Error t value Pr(>|t|)    
@@ -83,13 +82,37 @@ I chose three variables (attitude, stra, surf) and fit a regression model where 
 #---
 # Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
 
-Only attitudes had a statistically significant relationship with points, so I removed the other variables and ran the model without them. 
+CHECK THESE!!!
+Linear relationship
+
+A simple scatter plot should show a linear relationship between the explanatory and the dependent variable, as in Figure 7.3A. If the data describe a non-linear pattern (Figure 7.3B), then a straight line is not going to fit it well. In this situation, an alternative model should be considered, such as including a quadratic (squared,  
+x
+2
+ ) term.
+
+Independence of residuals
+
+The observations and therefore the residuals should be independent. This is more commonly a problem in time series data, where observations may be correlated across time with each other (autocorrelation).
+
+Normal distribution of residuals
+
+The observations should be normally distributed around the fitted line. This means that the residuals should show a normal distribution with a mean of zero (Figure 7.3A). If the observations are not equally distributed around the line, the histogram of residuals will be skewed and a normal Q-Q plot will show residuals diverging from the straight line (Figure 7.3B) (see Section 6.4.2).
+
+Equal variance of residuals
+
+The distance of the observations from the fitted line should be the same on the left side as on the right side. Look at the fan-shaped data on the simple regression diagnostics Shiny app. This fan shape can be seen on the residuals vs fitted values plot.
+
+
+
+Only attitudes had a statistically significant relationship with points, so I removed the other variables and ran the model without them so this was __univariable linear regression__. 
 
 ```{r}
 my_model <- lm(points ~ attitude, data = students2014)
 summary(my_model)
 ```
 DO THIS! Using a summary of your fitted model, explain the relationship between the chosen explanatory variables and the target variable (interpret the model parameters). Explain and interpret the multiple R-squared of the model. (0-3 points)
+
+_"R-squared is another measure of how close the data are to the fitted line. 0.0 indicates that none of the variability in the dependent is explained by the explanatory (no relationship between data points and fitted line) and 1.0 indicates that the model explains all of the variability in the dependent"_ In this case the multiple R-squared is 0.1906, meaning that only a small part of the variability is explained by attitude. 
 
 Last I have produced diagnostic plots: Residuals vs Fitted values, Normal QQ-plot and Residuals vs Leverage. 
 
