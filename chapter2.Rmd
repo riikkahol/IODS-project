@@ -34,7 +34,7 @@ The data contains seven variables:
 *Stra     Strategic approach    (Scale: min = 1, max = 5)  
 
 ## Summary and graphical overview of the data
-Next I have summmarized the data both in text and visually. The age of the participants varied between 17 and 55 (mean 25,51), the exam points varied between 7 and 33 (mean 22.72). The mean Attitude score was 3.143, mean 
+Next I have summmarized the data both in text and visually. The age of the participants varied between 17 and 55 (mean 25,51), the exam points varied between 7 and 33 (mean 22.72). 
 ```{r}
 summary(students2014)
 ```
