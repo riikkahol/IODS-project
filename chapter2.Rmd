@@ -34,33 +34,10 @@ The data contains seven variables:
 * Stra     Strategic approach    (Scale: min = 1, max = 5)  
 
 ## Summary and graphical overview of the data
-Next I have summmarized the data both in text and visually. The age of the participants varied between 17 and 55 (mean 25,51), the exam points varied between 7 and 33 (mean 22.72). 
+Next I have summmarized the data both in text and visually. EG. The age of the participants varied between 17 and 55 (mean 25,51), the exam points varied between 7 and 33 (mean 22.72). 
 ```{r}
 summary(students2014)
 ```
-                        age           attitude    
- Length:166         Min.   :17.00   Min.   :1.400  
- Class :character   1st Qu.:21.00   1st Qu.:2.600  
- Mode  :character   Median :22.00   Median :3.200  
-                    Mean   :25.51   Mean   :3.143  
-                    3rd Qu.:27.00   3rd Qu.:3.700  
-                    Max.   :55.00   Max.   :5.000  
-                    
-      deep            stra            surf      
- Min.   :1.583   Min.   :1.250   Min.   :1.583  
- 1st Qu.:3.333   1st Qu.:2.625   1st Qu.:2.417  
- Median :3.667   Median :3.188   Median :2.833  
- Mean   :3.680   Mean   :3.121   Mean   :2.787  
- 3rd Qu.:4.083   3rd Qu.:3.625   3rd Qu.:3.167  
- Max.   :4.917   Max.   :5.000   Max.   :4.333
- 
- points     
- Min.   : 7.00  
- 1st Qu.:19.00  
- Median :23.00  
- Mean   :22.72  
- 3rd Qu.:27.75  
- Max.   :33.00  
  
 ```{r}
 library(GGally)
