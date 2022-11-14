@@ -84,9 +84,11 @@ plot (my_model, which = c(1,2,5))
 ```
 
 ![residuals vs fitted](/Plots/Rplot05.png "This is residuals vs. fitted")
-This looks quite nice to me, as the distance of the observations from the fitted line is about the same on the left as on the right
+
 ![normal q-q](/Plots/Rplot06.png "This is normal q-q")
-Here at the right end of the image the residuals diverge from the straight line, so this is not normally distributed totally. As I don't have much experience in this, I don't know whether this is a problem or not as most of this fits the line nicely
+
 ![residuals vs leverage](/Plots/Rplot07.png "This is residuals vs leverage")
+
+The first one looks quite nice to me, as the distance of the observations from the fitted line is about the same on the left as on the right. In the second pic at the right end of the image the residuals diverge from the straight line, so this is not normally distributed totally. As I don't have much experience in this, I don't know whether this is a problem or not as most of this fits the line nicely. 
 
 And then I ran out of time :D 
