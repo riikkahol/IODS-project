@@ -9,17 +9,7 @@ I have done the data wrangling exercise - I had problems but I got help. With th
 
 ## Reading the raw data and exploring it
 
-This is data from [ASSIST 2014 International survey of Approaches to Learning by Vehkalahti] (https://www.mv.helsinki.fi/home/kvehkala/JYTmooc/JYTOPKYS2-meta.txt)
-
-The data contains seven variables: 
-
-*Age      Age (in years) derived from the date of birth
-*Attitude Global attitude toward statistics
-*Points   Exam points 
-*gender   Gender: M (Male), F (Female), Male = 1  Female = 2
-*Deep     Deep approach      (Scale: min = 1, max = 5)        
-*Surf     Surface approach    (Scale: min = 1, max = 5)          
-*Stra     Strategic approach    (Scale: min = 1, max = 5)        
+This is data from [ASSIST 2014 International survey of Approaches to Learning by Vehkalahti] (https://www.mv.helsinki.fi/home/kvehkala/JYTmooc/JYTOPKYS2-meta.txt) 
 
 Here I have set the working directory and read the csv file (noticed later it did not work) and later read the pre-exsting table
 ```{r}
@@ -33,6 +23,17 @@ str(students2014)
 ```
 Above I have also explored the dimensions of the data. Dimensions: 166_7. Structure 166 obs. of  7 variables
 
+The data contains seven variables: 
+
+*Age      Age (in years) derived from the date of birth
+*Attitude Global attitude toward statistics
+*Points   Exam points 
+*gender   Gender: M (Male), F (Female), Male = 1  Female = 2
+*Deep     Deep approach      (Scale: min = 1, max = 5)        
+*Surf     Surface approach    (Scale: min = 1, max = 5)          
+*Stra     Strategic approach    (Scale: min = 1, max = 5)  
+
+## Summary and graphical overview of the data
 Next I have summmarized the data both in text and visually. The age of the participants varied between 17 and 55 (mean 25,51), the exam points varied between 7 and 33 (mean 22.72). The mean Attitude score was 3.143, mean 
 ```{r}
 summary(students2014)
@@ -51,6 +52,8 @@ summary(students2014)
  Mean   :3.121   Mean   :2.787   Mean   :22.72  
  3rd Qu.:3.625   3rd Qu.:3.167   3rd Qu.:27.75  
  Max.   :5.000   Max.   :4.333   Max.   :33.00  
+ 
+ ![graphical overview](/image/rplot02new.png "This is graphical overview of the data")
  
 ```{r}
 library(GGally)
