@@ -114,7 +114,7 @@ DO THIS! Using a summary of your fitted model, explain the relationship between 
 
 _"R-squared is another measure of how close the data are to the fitted line. 0.0 indicates that none of the variability in the dependent is explained by the explanatory (no relationship between data points and fitted line) and 1.0 indicates that the model explains all of the variability in the dependent"_ In this case the multiple R-squared is 0.1906, meaning that only a small part of the variability is explained by attitude. 
 
-Last I have produced diagnostic plots: Residuals vs Fitted values, Normal QQ-plot and Residuals vs Leverage. 
+Last I have produced diagnostic plots: Residuals vs Fitted values, Normal QQ-plot and Residuals vs Leverage. Quantile-quantile is a graphical method for comparing the distribution of our own data to a theoretical distribution, such as the normal distribution. A Q-Q plot simply plots the quantiles for our data against the theoretical quantiles for a particular distribution (the default shown below is the normal distribution). If our data follow that distribution (e.g., normal), then our data points fall on the theoretical straight line.
 
 DO THIS! Explain the assumptions of the model and interpret the validity of those assumptions based on the diagnostic plots. (0-3 points)
 ```{r}
