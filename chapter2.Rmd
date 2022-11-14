@@ -25,13 +25,13 @@ Above I have also explored the dimensions of the data. Dimensions: 166_7. Struct
 
 The data contains seven variables: 
 
-*Age      Age (in years) derived from the date of birth
-*Attitude Global attitude toward statistics
-*Points   Exam points 
-*gender   Gender: M (Male), F (Female), Male = 1  Female = 2
-*Deep     Deep approach      (Scale: min = 1, max = 5)        
-*Surf     Surface approach    (Scale: min = 1, max = 5)          
-*Stra     Strategic approach    (Scale: min = 1, max = 5)  
+* Age      Age (in years) derived from the date of birth
+* Attitude Global attitude toward statistics
+* Points   Exam points 
+* gender   Gender: M (Male), F (Female), Male = 1  Female = 2
+* Deep     Deep approach      (Scale: min = 1, max = 5)        
+* Surf     Surface approach    (Scale: min = 1, max = 5)          
+* Stra     Strategic approach    (Scale: min = 1, max = 5)  
 
 ## Summary and graphical overview of the data
 Next I have summmarized the data both in text and visually. The age of the participants varied between 17 and 55 (mean 25,51), the exam points varied between 7 and 33 (mean 22.72). 
