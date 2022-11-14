@@ -44,7 +44,14 @@ library(GGally)
 library(ggplot2)
 p <- ggpairs(students2014, mapping = aes(col = gender), lower = list(combo = wrap("facethist", bins = 20)))
 ```
+<<<<<<< HEAD
 ![graphical overview](Plots/Rplot02new.png "This is graphical overview of the data")
+=======
+![graphicaloverview](Plots/Rplot02new.png "This is graphical overview of the data")
+
+![Rplot02new](https://user-images.githubusercontent.com/117283320/201755492-488c3fe3-6736-495b-bfad-f0c8550d2d3e.png)
+
+>>>>>>> def58f738c6345982f1a41240eb13bbe252f6fc5
  
 When exploring the data visually, it looks like there were less male participants, participating women were a bit younger, women seem to have worse attitudes. There seems to be statistically significant correlations between attitude and points, surf and attitude in males, surf and deep in males. In attitudes there seems to be a difference in distributions of male vs. female participants.  There seems to be  a lot of outliers in age, and also some in deep and attitude (male). 
 
@@ -66,7 +73,11 @@ surf         -0.5861     0.8014  -0.731  0.46563
 ---
 Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
 
+<<<<<<< HEAD
 ![summary of the fitted model](Plots/Rplot03.png "This is summary of the fitted model")
+=======
+![summary_of the fitted model](Plots/Rplot03.png "This is summary of the fitted model")
+>>>>>>> def58f738c6345982f1a41240eb13bbe252f6fc5
 
 Only attitudes had a statistically significant relationship with points, so I removed the other variables and ran the model without them so this was __univariable linear regression__. 
 
