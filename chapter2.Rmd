@@ -44,7 +44,7 @@ library(GGally)
 library(ggplot2)
 p <- ggpairs(students2014, mapping = aes(col = gender), lower = list(combo = wrap("facethist", bins = 20)))
 ```
-![graphical overview](/Plots/Rplot02new.png "This is graphical overview of the data")
+![graphical overview](/IODS-project/Plots/Rplot02new.png "This is graphical overview of the data")
  
 When exploring the data visually, it looks like there were less male participants, participating women were a bit younger, women seem to have worse attitudes. There seems to be statistically significant correlations between attitude and points, surf and attitude in males, surf and deep in males. In attitudes there seems to be a difference in distributions of male vs. female participants.  There seems to be  a lot of outliers in age, and also some in deep and attitude (male). 
 
@@ -66,7 +66,7 @@ surf         -0.5861     0.8014  -0.731  0.46563
 ---
 Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
 
-![summary of the fitted model](/Plots/Rplot03.png "This is summary of the fitted model")
+![summary of the fitted model](/IODS-project/Plots/Rplot03.png "This is summary of the fitted model")
 
 Only attitudes had a statistically significant relationship with points, so I removed the other variables and ran the model without them so this was __univariable linear regression__. 
 
@@ -83,11 +83,11 @@ Last I have produced diagnostic plots: Residuals vs Fitted values, Normal QQ-plo
 plot (my_model, which = c(1,2,5))
 ```
 
-![residuals vs fitted](/Plots/Rplot05.png "This is residuals vs. fitted")
+![residuals vs fitted](/IODS-project/Plots/Rplot05.png "This is residuals vs. fitted")
 
-![normal q-q](/Plots/Rplot06.png "This is normal q-q")
+![normal q-q](/IODS-project/Plots/Rplot06.png "This is normal q-q")
 
-![residuals vs leverage](/Plots/Rplot07.png "This is residuals vs leverage")
+![residuals vs leverage](/IODS-project/Plots/Rplot07.png "This is residuals vs leverage")
 
 The first one looks quite nice to me, as the distance of the observations from the fitted line is about the same on the left as on the right. In the second pic at the right end of the image the residuals diverge from the straight line, so this is not normally distributed totally. As I don't have much experience in this, I don't know whether this is a problem or not as most of this fits the line nicely. 
 
