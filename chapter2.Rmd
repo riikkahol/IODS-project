@@ -1,13 +1,124 @@
-# Performing and interpreting regression analysis
-
-*Describe the work you have done this week and summarize your learning.*
-
-- I have done the data wrangling exercise
-- Assume the reader has an introductory course level understanding of writing and reading R code as well as statistical methods.
-- Assume the reader has no previous knowledge of your data or the more advanced methods you are using.
-
 ```{r}
 date()
 ```
+# Performing and interpreting regression analysis
 
-Here we go again...
+## Data wrangling exercise
+
+I have done the data wrangling exercise - I had problems but I got help. With the existing instructions I would not have managed it. But I got something done. When doing the analysis exercise I noticed there was something wrong with my data or the way I had saved it or the way I tried to read it to rstudio so I used the data from the link given in the instructions. I compared the data with my data and it looks the same, but something is going on. 
+
+## Reading the raw data and exploring it
+
+This is data from [ASSIST 2014 International survey of Approaches to Learning by Vehkalahti] (https://www.mv.helsinki.fi/home/kvehkala/JYTmooc/JYTOPKYS2-meta.txt)
+
+The data contains seven variables: 
+
+*Age      Age (in years) derived from the date of birth
+*Attitude Global attitude toward statistics
+*Points   Exam points 
+*gender   Gender: M (Male), F (Female), Male = 1  Female = 2
+*Deep     Deep approach      (Scale: min = 1, max = 5)        
+*Surf     Surface approach    (Scale: min = 1, max = 5)          
+*Stra     Strategic approach    (Scale: min = 1, max = 5)        
+
+Here I have set the working directory and read the csv file (noticed later it did not work) and later read the pre-exsting table
+```{r}
+library(tidyverse)
+setwd("C:/Users/riikk/Documents/Open data science/IODS-project/Data")
+#students2014 = read_csv("learning2014.csv") This did not work so I used # later
+students2014 <- read.table("https://raw.githubusercontent.com/KimmoVehkalahti/Helsinki-Open-Data-Science/master/datasets/learning2014.txt",
+                           sep = ",", header = TRUE)
+dim(students2014)
+str(students2014)
+```
+Above I have also explored the dimensions of the data. Dimensions: 166_7. Structure 166 obs. of  7 variables
+
+Next I have summmarized the data both in text and visually. The age of the participants varied between 17 and 55 (mean 25,51), the exam points varied between 7 and 33 (mean 22.72). The mean Attitude score was 3.143, mean 
+```{r}
+summary(students2014)
+```
+    gender               age           attitude          deep      
+ Length:166         Min.   :17.00   Min.   :1.400   Min.   :1.583  
+ Class :character   1st Qu.:21.00   1st Qu.:2.600   1st Qu.:3.333  
+ Mode  :character   Median :22.00   Median :3.200   Median :3.667  
+                    Mean   :25.51   Mean   :3.143   Mean   :3.680  
+                    3rd Qu.:27.00   3rd Qu.:3.700   3rd Qu.:4.083  
+                    Max.   :55.00   Max.   :5.000   Max.   :4.917  
+      stra            surf           points     
+ Min.   :1.250   Min.   :1.583   Min.   : 7.00  
+ 1st Qu.:2.625   1st Qu.:2.417   1st Qu.:19.00  
+ Median :3.188   Median :2.833   Median :23.00  
+ Mean   :3.121   Mean   :2.787   Mean   :22.72  
+ 3rd Qu.:3.625   3rd Qu.:3.167   3rd Qu.:27.75  
+ Max.   :5.000   Max.   :4.333   Max.   :33.00  
+ 
+```{r}
+library(GGally)
+library(ggplot2)
+p <- ggpairs(students2014, mapping = aes(col = gender), lower = list(combo = wrap("facethist", bins = 20)))
+```
+
+When exploring the data visually, it looks like there were less male participants, participating women were a bit younger, women seem to have worse attitudes, attitudes does not seem to be normally distributed
+
+```{r}
+my_model <- lm(points ~ attitude + stra + surf, data = students2014)
+par(mar=c(1,1,1,1))
+summary(my_model)
+```
+Graphical overview of the data
+
+DO THIS! Show a graphical overview of the data and show summaries of the variables in the data. Describe and interpret the outputs, commenting on the distributions of the variables and the relationships between them. (0-3 points)
+
+DO THIS! Show a summary of the fitted model and comment and interpret the results. Explain and interpret the statistical test related to the model parameters. If an explanatory variable in your model does not have a statistically significant relationship with the target variable, remove the variable from the model and fit the model again without it. (0-4 points)
+
+I chose three variables (attitude, stra, surf) and fit a regression model where exam points was the target (dependent, outcome) variable. This is __multivariable linear regression__. With this we explore the relationship between the explaatory variables (attitude, stra and surf) and the exam points.
+
+#Coefficients:
+# Estimate Std. Error t value Pr(>|t|)    
+#(Intercept)  11.0171     3.6837   2.991  0.00322 ** 
+# attitude      3.3952     0.5741   5.913 1.93e-08 ***
+#  stra          0.8531     0.5416   1.575  0.11716    
+#surf         -0.5861     0.8014  -0.731  0.46563    
+#---
+# Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+CHECK THESE!!!
+Linear relationship
+
+A simple scatter plot should show a linear relationship between the explanatory and the dependent variable, as in Figure 7.3A. If the data describe a non-linear pattern (Figure 7.3B), then a straight line is not going to fit it well. In this situation, an alternative model should be considered, such as including a quadratic (squared,  
+x
+2
+ ) term.
+
+Independence of residuals
+
+The observations and therefore the residuals should be independent. This is more commonly a problem in time series data, where observations may be correlated across time with each other (autocorrelation).
+
+Normal distribution of residuals
+
+The observations should be normally distributed around the fitted line. This means that the residuals should show a normal distribution with a mean of zero (Figure 7.3A). If the observations are not equally distributed around the line, the histogram of residuals will be skewed and a normal Q-Q plot will show residuals diverging from the straight line (Figure 7.3B) (see Section 6.4.2).
+
+Equal variance of residuals
+
+The distance of the observations from the fitted line should be the same on the left side as on the right side. Look at the fan-shaped data on the simple regression diagnostics Shiny app. This fan shape can be seen on the residuals vs fitted values plot.
+
+
+
+Only attitudes had a statistically significant relationship with points, so I removed the other variables and ran the model without them so this was __univariable linear regression__. 
+
+```{r}
+my_model <- lm(points ~ attitude, data = students2014)
+summary(my_model)
+```
+DO THIS! Using a summary of your fitted model, explain the relationship between the chosen explanatory variables and the target variable (interpret the model parameters). Explain and interpret the multiple R-squared of the model. (0-3 points)
+
+_"R-squared is another measure of how close the data are to the fitted line. 0.0 indicates that none of the variability in the dependent is explained by the explanatory (no relationship between data points and fitted line) and 1.0 indicates that the model explains all of the variability in the dependent"_ In this case the multiple R-squared is 0.1906, meaning that only a small part of the variability is explained by attitude. 
+
+Last I have produced diagnostic plots: Residuals vs Fitted values, Normal QQ-plot and Residuals vs Leverage. Quantile-quantile is a graphical method for comparing the distribution of our own data to a theoretical distribution, such as the normal distribution. A Q-Q plot simply plots the quantiles for our data against the theoretical quantiles for a particular distribution (the default shown below is the normal distribution). If our data follow that distribution (e.g., normal), then our data points fall on the theoretical straight line.
+
+DO THIS! Explain the assumptions of the model and interpret the validity of those assumptions based on the diagnostic plots. (0-3 points)
+```{r}
+plot (my_model, which = c(1,2,5))
+```
+
+
