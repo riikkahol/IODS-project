@@ -96,3 +96,4 @@ The first one looks quite nice to me, as the distance of the observations from t
 I don't know why this prints the last graphs twice. 
 
 And then I ran out of time :D 
+
