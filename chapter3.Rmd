@@ -1,29 +1,91 @@
----
-title: "chapter3"
-output: html_document
-date: "2022-11-16"
----
+```{r}
+date()
+```
+# Chapter 3. Analysis exercise Logistic regression
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+## 2. Reading the data and  describing the dataset
+
+```{r}
+alc <- read.table("https://raw.githubusercontent.com/KimmoVehkalahti/Helsinki-Open-Data-Science/master/datasets/alc.csv", sep = ",", header = TRUE)
+
+colnames(alc)
+```
+The dataset explores student achievement in secondary education of two Portuguese schools. The data was collected using school reports and questionnaires. The performance in mathematics and portuguese language have been measudred and in addition the data included attributes such as demographic, social and school related features. More detailed description of the dataset can be read at: https://archive.ics.uci.edu/ml/datasets/Student+Performance
+
+Some of the answers are binary (eg. yes/no), and others numeric (eg. on a scale of 1-5)or nominal (eg. mother/father/other)
+
+
+## 3. Relationships between alcohol consumption and other variables
+
+I chose four variables: studytime, activities, health, goout
+
+* I hypothesize that if alcohol consumption is high, then a student would spend less time studying
+* I hypopthesize that if a student takes extra-curricular acitivities, their alcohol consumption is lower
+* I hypothesize that if students alcohol consumption is high, they rate their current health status as worse
+* I hypothesize that if students alcohol consumption is high, they go out with friends more 
+
+
+## 4. Exploring the distributions of the variables
+Comment on your findings and compare the results of your exploration to your previously stated hypotheses.
+
+```{r}
+library(tidyverse)
+library(dplyr)
+library(ggplot2)
+library(readr)
+library(gmodels)
+
+## Cross tabulations
+CrossTable(alc$high_use, alc$studytime)
+CrossTable(alc$high_use, alc$activities)
+CrossTable(alc$high_use, alc$health)
+CrossTable(alc$high_use, alc$goout)
+```
+## Bar plots
+```{r}
+studytime_barplot <- ggplot(data = alc, aes(x=studytime, fill = high_use))
+studytime_barplot + geom_bar(position=position_dodge()) + labs(y="Number of students")
+
+```
+```{r}
+activities_barplot <- ggplot(data = alc, aes(x=activities, fill = high_use))
+activities_barplot + geom_bar(position=position_dodge()) + labs(y="Number of students")
+```
+```{r}
+health_barplot <- ggplot(data = alc, aes(x=health, fill = high_use))
+health_barplot + geom_bar(position=position_dodge()) + labs(y="Number of students")
+```
+```{r}
+goout_barplot <- ggplot(data = alc, aes(x=goout, fill = high_use))
+goout_barplot + geom_bar(position=position_dodge()) + labs(y="Number of students")
+```
+## Box plots
+
+```{r}
+studytime_boxplot <- ggplot(alc, aes(x = high_use, y = studytime))
+
+# define the plot as a boxplot and draw it
+studytime_boxplot + geom_boxplot() 
+```
+```{r}
+activities_boxplot <- ggplot(alc, aes(x = high_use, y = activities))
+
+activities_boxplot + geom_boxplot() 
+
+```
+Boxplot makes no sense in this case as activities is a binary variable
+
+```{r}
+health_boxplot <- ggplot(alc, aes(x = high_use, y = health))
+
+health_boxplot + geom_boxplot() 
+```
+```{r}
+goout_boxplot <- ggplot(alc, aes(x = high_use, y = goout))
+
+goout_boxplot + geom_boxplot() 
 ```
 
-## R Markdown
+## 5. Logistic regression
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
-summary(cars)
-```
-
-## Including Plots
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.

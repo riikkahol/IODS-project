@@ -1,5 +1,5 @@
 
-# About the project
+# Chapter 1. About the project
 
 I found about the course from Kimmo. I am eager to learn but I know there is much to learn for me as this is something I have no previous experience in. I am expecting to learn to use R at least in a level that I will understand where to searh for help and know how to communicate with statisticians about the results of my studies. If I have enough time, I might even learn to really analyze data by myself as well. 
 

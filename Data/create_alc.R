@@ -21,7 +21,7 @@ dim(student_por)
 str(student_por)
 # 650 obs. of  33 variables
 
-# 4. Joining the data sets
+# 4. Joining the data sets and looking at the dimensions
 
 free_cols <- c("failures", "paid", "absences", "G1", "G2", "G3")
 join_cols <- setdiff(colnames(student_por), free_cols)
