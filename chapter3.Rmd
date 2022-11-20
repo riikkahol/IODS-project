@@ -10,9 +10,12 @@ alc <- read.table("https://raw.githubusercontent.com/KimmoVehkalahti/Helsinki-Op
 
 colnames(alc)
 ```
-The dataset explores student achievement in secondary education of two Portuguese schools. The data was collected using school reports and questionnaires. The performance in mathematics and portuguese language have been measudred and in addition the data included attributes such as demographic, social and school related features. More detailed description of the dataset can be read at: https://archive.ics.uci.edu/ml/datasets/Student+Performance
+The dataset explores student achievement in secondary education of two Portuguese schools. The data was collected using school reports and questionnaires. The performance in mathematics and portuguese language have been measudred and in addition the data included attributes such as demographic, social and school related features. In the dataset
+variable 'alc_use' is the average of 'Dalc' and 'Walc'variables. 'high_use' is TRUE if 'alc_use' is higher than 2 and FALSE otherwise.
 
-Some of the answers are binary (eg. yes/no), and others numeric (eg. on a scale of 1-5)or nominal (eg. mother/father/other)
+More detailed description of the dataset can be read at: https://archive.ics.uci.edu/ml/datasets/Student+Performance
+
+Some of the answers are binary (eg. yes/no), and others numeric (eg. on a scale of 1-5) or nominal (eg. mother/father/other)
 
 
 ## 3. Relationships between alcohol consumption and other variables
@@ -85,7 +88,74 @@ goout_boxplot <- ggplot(alc, aes(x = high_use, y = goout))
 
 goout_boxplot + geom_boxplot() 
 ```
+There seems to be an association between high_use and goout variables as well as high_use and studytime supporting my initial hypotheses. There doesn't seem to be an association between health and amount alcohol use and activities and alcohol use.  
 
 ## 5. Logistic regression
 
+### Presenting and interpreting summary of the fitted model
+Fitting the model
+```{r}
+m <- glm(high_use ~ studytime + activities + health + goout, data = alc, family = "binomial")
+summary(m)
+```
+The variables I thought were associated with high_use (studytime and goout) based on visual observation seem to be statistically significant as well based on this summary. For studytime there seems to be a negative association with high_use, meaning if the alcohol use is high, the probability of studying less is higher. High alcol use and going out with friends seem to be positively associated meaning that if the alcohol use is high, the probability of going more out with friends is higher. 
+
+###Presenting and interpreting the coefficients of the model as odds ratios
+```{r}
+# compute odds ratios (OR)
+OR <- coef(m) %>% exp
+
+# compute confidence intervals (CI)
+CI <- confint(m)%>% exp
+
+# print out the odds ratios with their confidence intervals
+cbind(OR, CI) 
+```
+In activities and health the confidence interval crosses 1, which means there is no association 
+If the alcohol use is high, the probability of going out with friends is 2,14x higher. So none of the variables has very high odds ratio. 
+
+## 6. Exploring the predictive power of my model
+
+```{r}
+ # fit the model
+m <- glm(high_use ~ studytime + goout, data = alc, family = "binomial")
+
+# predict() the probability of high_use
+probabilities <- predict(m, type = "response")
+
+library(dplyr)
+# add the predicted probabilities to 'alc'
+alc <- mutate(alc, probability = probabilities)
+
+# use the probabilities to make a prediction of high_use
+alc <- mutate(alc, prediction = probability > 0.5)
+
+# tabulate the target variable versus the predictions
+table(high_use = alc$high_use, prediction = alc$prediction) %>% addmargins()
+
+```
+
+This means that my model of two statistically significant variables is not great at predicting high alcohol use. Other predictors would need to be added to create more accurate prediction. Among all predictions 91 were inaccurate. 
+
+### Computing the training error
+
+```{r}
+# define a loss function (mean prediction error)
+loss_func <- function(class, prob) {
+  n_wrong <- abs(class - prob) > 0.5
+  mean(n_wrong)
+}
+
+# call loss_func to compute the average number of wrong predictions in the (training) data
+loss_func(class = alc$high_use, prob = alc$probability)
+```
+```{r}
+# K-fold cross-validation
+library(boot)
+cv <- cv.glm(data = alc, cost = loss_func, glmfit = m, K = nrow(alc))
+
+# average number of wrong predictions in the cross validation
+cv$delta[1]
+```
+This tells that 25% of predictions are wrong in this model. Of my hypotheses 50% were wrong, so this model does better than my original guesses. I do not know how to compare this with R with a random guess. 
 
