@@ -159,3 +159,17 @@ cv$delta[1]
 ```
 This tells that 25% of predictions are wrong in this model. Of my hypotheses 50% were wrong, so this model does better than my original guesses. I do not know how to compare this with R with a random guess. 
 
+## 7. BONUS
+
+```{r}
+# K-fold cross-validation
+library(boot)
+cv <- cv.glm(data = alc, cost = loss_func, glmfit = m, K = nrow(alc))
+
+# average number of wrong predictions in the cross validation
+cv$delta[1]
+#10-fold cross validation
+cv <- cv.glm(data = alc, cost = loss_func, glmfit = m, K = 10)
+cv$delta[1]
+```
+My model is slightly better than the model introduced in the exercise set. 
