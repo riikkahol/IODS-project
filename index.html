@@ -435,11 +435,11 @@ learn this next week.</p>
 <pre class="r"><code># This is a so-called &quot;R chunk&quot; where you can write R code.
 
 date()</code></pre>
-<pre><code>## [1] &quot;Sun Nov 20 21:34:23 2022&quot;</code></pre>
+<pre><code>## [1] &quot;Sun Nov 20 22:09:36 2022&quot;</code></pre>
 <p>The text continues here.</p>
 <hr />
 <pre class="r"><code>date()</code></pre>
-<pre><code>## [1] &quot;Sun Nov 20 21:34:23 2022&quot;</code></pre>
+<pre><code>## [1] &quot;Sun Nov 20 22:09:36 2022&quot;</code></pre>
 </div>
 <div id="chapter-2.-performing-and-interpreting-regression-analysis" class="section level1">
 <h1>Chapter 2. Performing and interpreting regression analysis</h1>
@@ -639,7 +639,7 @@ this is a problem or not as most of this fits the line nicely.</p>
 <p>And then I ran out of time :D</p>
 <hr />
 <pre class="r"><code>date()</code></pre>
-<pre><code>## [1] &quot;Sun Nov 20 21:34:27 2022&quot;</code></pre>
+<pre><code>## [1] &quot;Sun Nov 20 22:09:38 2022&quot;</code></pre>
 </div>
 </div>
 <div id="chapter-3.-analysis-exercise-logistic-regression" class="section level1">
@@ -977,6 +977,11 @@ loss_func &lt;- function(class, prob) {
 # call loss_func to compute the average number of wrong predictions in the (training) data
 loss_func(class = alc$high_use, prob = alc$probability)</code></pre>
 <pre><code>## [1] 0.2459459</code></pre>
+<p>Computing average number of wrong predictions by random guess
+(uniform distribution from 0.0 to 1.0)</p>
+<pre class="r"><code>alc &lt;- mutate(alc, random_guess = runif(n()))
+loss_func(class = alc$high_use, prob = alc$random_guess)</code></pre>
+<pre><code>## [1] 0.4864865</code></pre>
 <pre class="r"><code># K-fold cross-validation
 library(boot)
 cv &lt;- cv.glm(data = alc, cost = loss_func, glmfit = m, K = nrow(alc))
@@ -984,10 +989,9 @@ cv &lt;- cv.glm(data = alc, cost = loss_func, glmfit = m, K = nrow(alc))
 # average number of wrong predictions in the cross validation
 cv$delta[1]</code></pre>
 <pre><code>## [1] 0.2459459</code></pre>
-<p>This tells that 25% of predictions are wrong in this model. Of my
-hypotheses 50% were wrong, so this model does better than my original
-guesses. I do not know how to compare this with R with a random
-guess.</p>
+<p>This tells that 25% of predictions are wrong in this model. Random
+guess was wrong about 50% of the time and my model was wrong 25% of the
+time</p>
 </div>
 </div>
 <div id="bonus" class="section level2">
@@ -1003,8 +1007,9 @@ cv$delta[1]</code></pre>
 cv &lt;- cv.glm(data = alc, cost = loss_func, glmfit = m, K = 10)
 cv$delta[1]</code></pre>
 <pre><code>## [1] 0.2459459</code></pre>
-<p>My model is slightly better than the model introduced in the exercise
-set.</p>
+<p>There was no big difference between K-fold cross-validation and
+10-fold cross-validation. My model is slightly better than the model
+introduced in the exercise set.</p>
 </div>
 </div>
 
