@@ -1,0 +1,192 @@
+```{r}
+date()
+```
+
+# Chapter 4. Analysis exercise Clustering and classification
+```{r}
+library(tidyverse)
+#install.packages(c("MASS", "corrplot"))
+```
+## Loading the Boston data from the MASS package
+
+```{r}
+library(MASS)
+data("Boston")
+```
+## 2. Exploring the structure and the dimensions of the data and describing the dataset 
+```{r}
+str(Boston)
+dim(Boston)
+```
+This is a dataset already loaded in R that is used often for teaching purposes. The dataset has 506 observations of  14 variables, 506 rows and 14 columns. The dataset explores Housing Values in Suburbs of Boston. The variables include for example per capita crime rate by town, weighted mean of distances to five Boston employment centres and pupil-teacher ratio by town. More about the dataset can be read here: https://stat.ethz.ch/R-manual/R-devel/library/MASS/html/Boston.html
+
+## 3. Graphical overview and summaries of the variables
+
+```{r}
+library(corrplot)
+summary(Boston)
+pairs(Boston)
+corr_boston <- cor(Boston)
+corrplot(corr_boston, method="circle", type = "upper", cl.pos = "r", tl.pos = "d", tl.cex = 0.7)
+```
+
+### Describing and interpreting the outputs, commenting on the distributions of the variables and the relationships between them:
+
+* crim (per capita crime rate by town)- the mean (3.61352)and median (0.25651) are low, but there are probably a few cases where the crime rate is very high as the range is from 0.00632 to 88.97620
+* zn (proportion of residential land zoned for lots over 25,000 sq.ft.)The range is from 0 to 100. Mean is 11.36 and median 0 so most of the answers are in the lower range of the scale
+* indus (proportion of non-retail business acres per town.)THe range is from 0.26 to 27.74. Mean and median are close to eachother but skewed a bit towards lower end of the range. 
+* chas (Charles River dummy variable (= 1 if tract bounds river; 0 otherwise).) Mean: 0.06917, meaning it is more common that tract does not bound river
+*nox (nitrogen oxides concentration (parts per 10 million).)The range is from 0.3850 to 0.8710 and mean is 0.5547, median almost the same. Slightly skewed towards lower nitrogen concentration. 
+* rm (average number of rooms per dwelling.)Range: 3.561-8.780, mean 6.285, median almost the same. 
+* age (proportion of owner-occupied units built prior to 1940.)Range 2.90-100. Mean: 68.57, the first quartile is also over 45, so most cities seem to have a rather high proportion of owner-occupied units built prior to 1940. 
+* dis (weighted mean of distances to five Boston employment centres.)Range 1.130-12.127, mean and median a bit over 3, so most cities are quite close to the employment centres
+* rad (index of accessibility to radial highways.)Range 1-24. Mean 9.549, Median 5. Skewed towards the lower range of the index. 
+* tax (full-value property-tax rate per $10,000.) Range 187-711, Mean 408.2, Quite equally distrebuted
+* black1000(Bk - 0.63)^21000(Bk−0.63) (2 where BkBk is the proportion of blacks by town.) Range 0.32 -396.9. Already first quartile is 375.38 so there are only a few findings at the lower range of the scale. 
+* lstat (lower status of the population (percent).)Range 1,73-37.97. 3rd quartile is 16.95 so most of the findings are at the lower range of the scale
+* medv (median value of owner-occupied homes in $1000s.)Range: 5-50, mean 22.53 - quite equally distributed
+
+Relationships between the variables:
+
+The highest positive correlation is between rad and tax (better access to radial highways is correlated with higher property tax rate, makes sense!). High negative correlations are between age and dis, lstat and med, dis and nox (this has highest correlation - the farther away you are from employment centers the less nitroxide oxid there is - makes sense!) as well as indus and dis. 
+
+## 4. Standardizing the dataset, printing out summaries of the scaled data
+```{r}
+boston_scaled <- scale(Boston)
+summary(boston_scaled)
+class(boston_scaled)
+boston_scaled <- as.data.frame(boston_scaled)
+```
+The standard score or Z-score is the number of standard deviations by which the value of a raw score is above or below the mean value of what is being observed or measured.  Scale function does this -> the variables become more similar and easier to compare
+
+### Creating a categorical variable
+
+```{r}
+boston_scaled$crim <- as.numeric(boston_scaled$crim)
+summary(boston_scaled$crim)
+bins <- quantile(boston_scaled$crim)
+bins
+crime <- cut(boston_scaled$crim, breaks = bins, include.lowest = TRUE, labels = c("low", "med_low", "med_high", "high"))
+table(crime)
+boston_scaled <- dplyr::select(boston_scaled, -crim)
+boston_scaled <- data.frame(boston_scaled, crime)
+
+```
+### Dividing the dataset to train and test sets
+```{r}
+n <- nrow(boston_scaled)
+ind <- sample(n,  size = n * 0.8)
+train <- boston_scaled[ind,]
+test <- boston_scaled[-ind,]
+correct_classes <- test$crime
+
+test <- dplyr::select(test, -crime)
+correct_classes
+```
+
+## 5. Fitting the linear discriminant analysis on the train set. 
+
+```{r}
+
+lda.fit <- lda(crime ~ ., data = train)
+lda.fit
+lda.arrows <- function(x, myscale = 1, arrow_heads = 0.1, color = "red", tex = 0.75, choices = c(1,2)){
+  heads <- coef(x)
+  arrows(x0 = 0, y0 = 0, 
+         x1 = myscale * heads[,choices[1]], 
+         y1 = myscale * heads[,choices[2]], col=color, length = arrow_heads)
+  text(myscale * heads[,choices], labels = row.names(heads), 
+       cex = tex, col=color, pos=3)
+}
+
+classes <- as.numeric(train$crime)
+
+plot(lda.fit, dimen = 2)
+lda.arrows(lda.fit, myscale = 1)
+
+
+```
+
+## 6. Saving the crime categories and predicting the classes with the LDA model
+I had saved the crime categories already before
+```{r}
+lda.pred <- predict(lda.fit, newdata = test)
+table(correct = correct_classes, predicted = lda.pred$class)
+
+```
+The model mostly predicts correctly
+
+## 7. Reloading the Boston dataset and standardizing the dataset, calculating the distances between the observations
+```{r}
+library(MASS)
+data("Boston")
+
+boston_scaled <- scale(Boston)
+summary(boston_scaled)
+class(boston_scaled)
+boston_scaled <- as.data.frame(boston_scaled)
+
+
+dist_eu <- dist(boston_scaled)
+
+summary(dist_eu)
+
+dist_man <- dist(boston_scaled, method = "manhattan")
+
+```
+Running k-means algorithm on the dataset.
+```{r}
+
+set.seed(123)
+k_max <- 10
+
+twcss <- sapply(1:k_max, function(k){kmeans(boston_scaled, k)$tot.withinss})
+qplot(x = 1:k_max, y = twcss, geom = 'line')
+km <- kmeans(boston_scaled, centers = 6)
+
+
+```
+
+Around 6 clusters seems optimal. 
+
+```{r}
+pairs(boston_scaled, col = boston_scaled$cluster)
+```
+
+This is a very busy plot so it is hard to read - I think I followed the instructions so I don't know how to fix it - I gave up with interpreting the results 
+
+
+## Bonus
+
+```{r}
+library(MASS)
+library(ggplot2)
+
+set.seed(123)
+
+# load and scale data
+data("Boston")
+boston_scaled <- scale(Boston)
+boston_scaled <- as.data.frame(boston_scaled)
+
+# perform k-means with 3 clusters. add cluster as a new column
+km <- kmeans(Boston, centers = 3)
+boston_scaled$cluster <- km$cluster
+
+# the function for lda biplot arrows
+lda.arrows <- function(x, myscale = 1, arrow_heads = 0.1, color = "red", tex = 0.75, choices = c(1,2)){
+  heads <- coef(x)
+  arrows(x0 = 0, y0 = 0, 
+         x1 = myscale * heads[,choices[1]], 
+         y1 = myscale * heads[,choices[2]], col=color, length = arrow_heads)
+  text(myscale * heads[,choices], labels = row.names(heads), 
+       cex = tex, col=color, pos=3)
+}
+
+# fit the model and plot 
+lda.fit = lda(cluster ~ ., data=boston_scaled)
+plot(lda.fit, dimen = 2)
+lda.arrows(lda.fit, myscale = 2)
+```
+
+Vectors rad, tax and black are clearly visible and the are strongest determinants in dividing variables in different clusters. Vectors rad ja tax point almost to the same direction which means that they don't have independent prediction power but as seen earlier they are correlated they might work in combination. Vector black goes to another direction, so it seems it is independent of the others. 
