@@ -67,7 +67,6 @@ data("Boston")
 str(Boston)
 summary(Boston)
 
-
 # plot matrix of the variables
 pairs(Boston)
 ```
@@ -169,7 +168,6 @@ class(boston_scaled)
 boston_scaled <- as.data.frame(boston_scaled)
 
 ```
-
 
 ## 4.4 Creating a factor variable
 
@@ -437,6 +435,9 @@ Hints:
 # Boston dataset is available
 
 # euclidean distance matrix
+
+# look at the summary of the distances
+summary(dist_man)
 dist_eu <- dist(Boston)
 
 # look at the summary of the distances
@@ -444,9 +445,6 @@ summary(dist_eu)
 
 # manhattan distance matrix
 dist_man <- dist(Boston, method = "manhattan")
-
-# look at the summary of the distances
-summary(dist_man)
 
 ```
 

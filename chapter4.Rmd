@@ -190,3 +190,51 @@ lda.arrows(lda.fit, myscale = 2)
 ```
 
 Vectors rad, tax and black are clearly visible and the are strongest determinants in dividing variables in different clusters. Vectors rad ja tax point almost to the same direction which means that they don't have independent prediction power but as seen earlier they are correlated they might work in combination. Vector black goes to another direction, so it seems it is independent of the others. 
+
+## Superbonus
+
+scale data and cluster it. we need at least 4 clusters for the 3D plot and fit the model
+
+```{r}
+boston_scaled  <- as.data.frame(scale(Boston))
+km <- kmeans(boston_scaled, centers = 4)
+
+boston_scaled$cluster <- km$cluster
+lda.fit <- lda(cluster ~ ., data = boston_scaled)
+
+# add categorical variable "crime"
+bins <- quantile(boston_scaled$crim)
+crime <- cut(boston_scaled$crim, breaks = bins, include.lowest = TRUE, labels = c("low", "med_low", "med_high", "high"))
+boston_scaled <- dplyr::select(boston_scaled, -crim)
+boston_scaled <- data.frame(boston_scaled, crime)
+
+# create train and test data
+ind <- sample(nrow(boston_scaled),  size = nrow(boston_scaled) * 0.9)
+train <- boston_scaled[ind,]
+test <- boston_scaled[-ind,]
+
+# select predictors
+model_predictors <- dplyr::select(train, -crime)
+
+# check the dimensions
+dim(model_predictors)
+dim(lda.fit$scaling)
+```
+
+```{r}
+# matrix multiplication
+matrix_product <- as.matrix(model_predictors) %*% lda.fit$scaling
+matrix_product <- as.data.frame(matrix_product)
+
+# plot 3D, color set to crime classes of train data
+library(plotly)
+plot_ly(x = matrix_product$LD1, y = matrix_product$LD2, z = matrix_product$LD3, type= 'scatter3d', mode='markers', color = train$crime)
+```
+
+``` {r}
+# plot 3D, color set to clusters of train data
+train$cluster <- as.factor(train$cluster)
+plot_ly(x = matrix_product$LD1, y = matrix_product$LD2, z = matrix_product$LD3, type= 'scatter3d', mode='markers', color = train$cluster)
+``` 
+
+In the second one the colour is set according to the crime rate and in the first one clusters of the k-means. In many parts these are similar though (cluster1 seems to include the same observations as the ones with the high crime rate)
