@@ -116,10 +116,10 @@ Hints:
 library(stringr)
 
 # look at the structure of the GNI column in 'human'
-
+str(human$GNI)
 
 # remove the commas from GNI and print out a numeric version of it
-str_replace(human$GNI, pattern=",", replace ="")
+str_replace(human$GNI, pattern=",", replace ="") %>% as.numeric
 
 ```
 
@@ -171,7 +171,7 @@ human <- select(human, one_of(keep))
 complete.cases(human)
 
 # print out the data along with a completeness indicator as the last column
-data.frame(human[-1], comp = "change me!")
+data.frame(human[-1], comp = complete.cases())
 
 # filter out all rows with NA values
 human_ <- filter(human, TRUE) # modify the "TRUE", see instructions above!
