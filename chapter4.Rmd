@@ -152,6 +152,13 @@ Around 6 clusters seems optimal.
 ```{r}
 pairs(boston_scaled, col = boston_scaled$cluster)
 ```
+HUOM! Tässä vinkkejä kuvaajan saamiseen paremmin luettavaksi :) 
+
+pairs(Boston, gap = 0.5, oma = c(0, 0, 0, 0), pch = 20)
+
+- 'gap' sets the space between subplots (defaults to 1)
+- 'oma' sets the outer margins of the plot
+- Different numbers for 'pch' generate different points in the plots. For example 'pch = 20' results in slightly smaller points than the default.
 
 This is a very busy plot so it is hard to read - I think I followed the instructions so I don't know how to fix it - I gave up with interpreting the results 
 

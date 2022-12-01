@@ -246,6 +246,7 @@ library(dplyr)
 library(MASS)
 boston_scaled <- read.table("https://raw.githubusercontent.com/KimmoVehkalahti/Helsinki-Open-Data-Science/master/datasets/boston_scaled.txt",
                             sep=",", header = T)
+boston_scaled$crime <- factor(boston_scaled$crime, levels = c("low", "med_low", "med_high", "high"))
 ```
 
 ### Instructions
