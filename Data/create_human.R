@@ -94,6 +94,6 @@ human_
 
 write.table(file = "Data/human.csv", human_, sep = ",", row.names = T)
 
-test <- read.table("Data/human.csv", sep = ",", header = T)
+test <- read.table("Data/human.csv", sep = ",", row.names = T)
 str(test)
 # It works!

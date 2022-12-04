@@ -1,0 +1,158 @@
+```{r}
+date()
+```
+
+# Chapter 5 Dimensionality reduction techniques
+```{r}
+library(tidyverse)
+library(tidyr)
+library(stringr)
+library(dplyr)
+library(GGally)
+
+human <- read.table("https://raw.githubusercontent.com/KimmoVehkalahti/Helsinki-Open-Data-Science/master/datasets/human2.txt", 
+                    sep =",", header = T)
+```
+## Showing graphical overview and summaries of the variables of the data 
+```{r}
+str(human)
+dim (human)
+summary(human)
+```
+
+```{r}
+library(corrplot)
+summary(human)
+pairs(human)
+corr_human <- cor(human)
+corrplot(corr_human, method="circle", type = "upper", cl.pos = "r", tl.pos = "d", tl.cex = 0.7)
+```
+This graph is not very readable so I tried another one that I learned last week from one of the assignments I assessed
+
+```{r}
+color_correlation <- function(data, mapping, method="p", use="pairwise", ...){
+    # Function by user20650 on Stackoverflow (https://stackoverflow.com/a/53685979)
+    # grab data
+    x <- eval_data_col(data, mapping$x)
+    y <- eval_data_col(data, mapping$y)
+
+    # calculate correlation
+    corr <- cor(x, y, method=method, use=use)
+
+    # calculate colour based on correlation value
+    # Here I have set a correlation of minus one to blue, 
+    # zero to white, and one to red 
+    # Change this to suit: possibly extend to add as an argument of `my_fn`
+    colFn <- colorRampPalette(c("blue", "white", "red"), interpolate ='spline')
+    fill <- colFn(100)[findInterval(corr, seq(-1, 1, length=100))]
+
+    ggally_cor(data = data, mapping = mapping, ...) + 
+      theme_void() +
+      theme(panel.background = element_rect(fill=fill))
+  }
+
+
+ggpairs(
+  data = human,
+  upper = list(continuous = color_correlation),
+  lower = list(continuous = wrap("points", alpha = 0.3, size=0.3)),
+)
+```
+Most of the variables don't seem to be normally distributed. Strongest positive correlations seem to be between Life.Exp and Edu.Exp and Ado.Birth and Mat.Mor. Strongest negative correlation seems to be between Mat.Mor and Life.Exp. 
+
+
+##2. Performing principal component analysis on the raw data
+```{r}
+pca_human <- prcomp(human)
+
+# creating a summary of pca_human
+s <- summary(pca_human)
+
+# rounded percentanges of variance captured by each PC
+pca_pr <- round(100*s$importance[2, ], digits = 3)
+
+# print out the percentages of variance
+pca_pr
+
+# create object pc_lab to be used as axis labels
+pc_lab <- paste0(names(pca_pr), " (", pca_pr, "%)")
+
+# draw a biplot
+biplot(pca_human, cex = c(0.8, 1), col = c("grey40", "deeppink2"), xlab = pc_lab[1], ylab = pc_lab[2])
+
+```
+Now that the variables are not standardized, PC1 seems to capture 99,99% of the variability
+
+
+## 3. Standardizing the variables and repeating principal component analysis
+
+```{r}
+
+# standardize the variables
+human_std <- scale(human)
+
+# print out summaries of the standardized variables
+summary(human_std)
+
+pca_human <- prcomp(human_std)
+
+# creating a summary of pca_human
+s <- summary(pca_human)
+
+# rounded percentanges of variance captured by each PC
+pca_pr <- round(100*s$importance[2, ], digits = 3)
+
+# print out the percentages of variance
+pca_pr
+
+# create object pc_lab to be used as axis labels
+pc_lab <- paste0(c("Health and knowledge","Empowerment"), " (", pca_pr, "%)")
+
+# draw a biplot
+biplot(pca_human, cex = c(0.8, 1), col = c("grey40", "deeppink2"), xlab = pc_lab[1], ylab = pc_lab[2])
+```
+## 4. Interpretations of the first two principal component dimensions on the standardized human data
+
+The results are very different. In the first biplot almost all of the variability was captured by PC1 and now 53,605% and PC2 16.237%. They are different because after standardization the variables are better comparable with eachother as the scales are more similar. Pc 2 describes womens participation in working life and politics. For example In some of the islamic countries womens participation is very low. PC 1 describes expected years of schooling, life expectancy, Gross national income per capita. maternal mortality ratio and adolecscent birth rate are negatively correlated with the other variables such as education and life expectancy. On the left there are western countries and on the right poorer, for example African countries. 
+
+
+## 5. Loading tea dataset and converting its character variables to factors
+```{r}
+tea <- read.csv("https://raw.githubusercontent.com/KimmoVehkalahti/Helsinki-Open-Data-Science/master/datasets/tea.csv", stringsAsFactors = TRUE)
+```
+Exploring the structure and dimensions of tea data. 
+```{r}
+str(tea)
+dim(tea)
+```
+The data has 300 observations of 36 variables, 300 rows and 36 columns
+
+Browzing the contents and visualizing the data
+```{r}
+View(tea)
+```
+Using MCA on the tea data and drewing variable biplot of the analysis
+```{r}
+library(FactoMineR)
+library(dplyr)
+library(tidyr)
+
+# column names to keep in the dataset
+keep_columns <- c("Tea", "How", "how", "sugar", "where", "lunch")
+
+# select the 'keep_columns' to create a new dataset
+tea_time <- select(tea, one_of(keep_columns))
+
+# look at the summaries and structure of the data
+summary(tea_time)
+mca <- MCA(tea_time, graph = FALSE)
+
+# summary of the model
+summary(mca)
+
+# visualing MCA
+
+plot(mca, invisible=c("ind"), graph.type = "classic", habillage = "quali")
+
+```
+Dimension 1 seems to describe how sophisticated the tea use is. On the right hand side of the map there is unpacked tea bought from a teashop and on the left side teabags from chainstore. With these variables, it is hard to understand what kind of phenomenon is behind Dim 2. 
