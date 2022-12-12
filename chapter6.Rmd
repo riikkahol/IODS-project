@@ -89,7 +89,7 @@ ggplot(RATSL, aes(x = factor(Time), y = Weight, fill = Group )) +
 
 ```
 
-# Drawing boxplots of the weights of each group
+## Drawing boxplots of the weights of each group
 
 ```{R}
 
