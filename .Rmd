@@ -1,0 +1,89 @@
+
+```{R}
+library(tidyverse)
+library(ggplot2)
+
+BPRS <- read.table("https://raw.githubusercontent.com/KimmoVehkalahti/MABS/master/Examples/data/BPRS.txt", sep =" ", header = T)
+RATS <- read.table("https://raw.githubusercontent.com/KimmoVehkalahti/MABS/master/Examples/data/rats.txt", sep ="\t", header = T)
+
+BPRS$treatment <- factor(BPRS$treatment)
+BPRS$subject <- factor(BPRS$subject)
+
+RATS$ID <- factor(RATS$ID)
+RATS$Group <- factor(RATS$Group)
+
+BPRSL <-  pivot_longer(BPRS, cols = -c(treatment, subject), names_to = "weeks", values_to = "bprs") %>%
+  arrange(weeks) %>% mutate(week = as.integer(substr(weeks,5,5)))
+
+RATSL <- pivot_longer(RATS, cols=-c(ID,Group), names_to = "WD",values_to = "Weight")  %>%  
+  mutate(Time = as.integer(substr(WD,3,4))) %>% arrange(Time)
+```
+
+```{R}
+# Draw the plot
+ggplot(RATSL, aes(x = Time, y = Weight, linetype = ID)) +
+  geom_line() +
+  scale_linetype_manual(values = rep(1:10, times=4)) +
+  facet_grid(. ~ Group, labeller = label_both) +
+  theme(legend.position = "none") + 
+  scale_y_continuous(limits = c(min(RATSL$Weight), max(RATSL$Weight)))
+
+```
+
+```{R}
+RATSL <- RATSL %>%
+  group_by(Time) %>%
+  mutate( stdweight = (Weight - mean(Weight))/sd(Weight) ) %>%
+  ungroup()
+
+# Draw the plot
+ggplot(RATSL, aes(x = Time, y = stdweight, linetype = ID)) +
+  geom_line() +
+  scale_linetype_manual(values = rep(1:10, times=4)) +
+  facet_grid(. ~ Group, labeller = label_both) +
+  theme(legend.position = "none") + 
+  scale_y_continuous(limits = c(min(RATSL$stdweight), max(RATSL$stdweight)))
+
+```
+
+```{R}
+library(plyr)
+
+# Summary data with mean and standard error of bprs by treatment and week 
+RATSS <- RATSL %>% ddply(c("Group", "Time"), summarise, mean = mean(Weight), N = length(Weight), se = sd(Weight) / sqrt(N))
+# Couldn't make the group_by(), summarise(), ungroup() method in exercise work, decided to use this alternative method
+
+#RATSS <- RATSL %>%
+#  group_by(Group, Time) %>%
+#  summarise( across(everything()), mean = mean(Weight), N = length(Weight), se = sd(Weight) / sqrt(N)) %>% 
+#  ungroup()
+
+ggplot(RATSS, aes(x = Time, y = mean, linetype = Group, shape = Group)) +
+  geom_line() +
+  scale_linetype_manual(values = c(1,2,3)) +
+  geom_point(size=3) +
+  scale_shape_manual(values = c(1,2,4)) +
+  geom_errorbar(aes(ymin=mean-se, ymax=mean+se, linetype="1"), width=0.3) +
+  theme(legend.position = c(0.8,0.5)) +
+  scale_y_continuous(name = "mean(Weight) +/- se(Weight)")
+```
+
+```{R}
+ggplot(RATSL, aes(x = factor(Time), y = Weight, fill = Group )) +
+  geom_boxplot() +
+  theme_bw() + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) +  
+  scale_x_discrete(name = "Time") +
+  scale_y_continuous(name = "Weight", limits = c(min(RATSL$Weight), max(RATSL$Weight)))
+```
+
+```{R}
+# Draw a boxplot
+
+ggplot(RATSS, aes(x = Group, y = mean)) +
+  geom_boxplot() +
+  stat_summary(fun = "mean", geom = "point", shape=23, size=4, fill = "white") +
+  scale_y_continuous(name = "mean(Weight)")
+```
+
+```{R}
+```
